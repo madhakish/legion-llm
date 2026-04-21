@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.7.7] - 2026-04-21
+
+### Fixed
+- DaemonClient settings fallback for standalone/CLI contexts — `resolve_llm_settings` now gracefully falls back to `Legion::Settings[:llm]` when `Legion::LLM.settings` is unavailable, preventing failures in CLI usage
+
 ## [0.7.6] - 2026-04-14
 
 ### Added

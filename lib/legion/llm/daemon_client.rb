@@ -189,13 +189,9 @@ module Legion
       # Legion::Settings[:llm] (loaded by CLI ensure_settings before
       # daemon_client is required standalone).
       def resolve_llm_settings
-        if defined?(Legion::LLM) && Legion::LLM.respond_to?(:settings)
-          return Legion::LLM.settings
-        end
+        return Legion::LLM.settings if defined?(Legion::LLM) && Legion::LLM.respond_to?(:settings)
 
-        if defined?(Legion::Settings) && Legion::Settings.respond_to?(:[])
-          return Legion::Settings[:llm]
-        end
+        return Legion::Settings[:llm] if defined?(Legion::Settings) && Legion::Settings.respond_to?(:[])
 
         nil
       end
