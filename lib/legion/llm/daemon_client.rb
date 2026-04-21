@@ -171,9 +171,7 @@ module Legion
       # ── private helpers ────────────────────────────────────────────────
 
       def fetch_daemon_url
-        return nil unless defined?(Legion::LLM) && Legion::LLM.respond_to?(:settings)
-
-        settings = Legion::LLM.settings
+        settings = resolve_llm_settings
         return nil unless settings.is_a?(Hash)
 
         daemon = settings[:daemon] || settings['daemon']
@@ -183,6 +181,22 @@ module Legion
         daemon[:url] || daemon['url']
       rescue StandardError => e
         handle_exception(e, level: :warn)
+        nil
+      end
+
+      # Resolves LLM settings from whichever source is available.
+      # Prefers Legion::LLM.settings (fully started), falls back to
+      # Legion::Settings[:llm] (loaded by CLI ensure_settings before
+      # daemon_client is required standalone).
+      def resolve_llm_settings
+        if defined?(Legion::LLM) && Legion::LLM.respond_to?(:settings)
+          return Legion::LLM.settings
+        end
+
+        if defined?(Legion::Settings) && Legion::Settings.respond_to?(:[])
+          return Legion::Settings[:llm]
+        end
+
         nil
       end
 
@@ -243,7 +257,8 @@ module Legion
         end
       end
 
-      private_class_method :fetch_daemon_url, :safe_parse, :extract_retry_after, :interpret_inference_response
+      private_class_method :fetch_daemon_url, :resolve_llm_settings, :safe_parse, :extract_retry_after,
+                           :interpret_inference_response
     end
   end
 end

@@ -73,8 +73,26 @@ RSpec.describe Legion::LLM::DaemonClient do
         allow(Legion::LLM).to receive(:respond_to?).with(:settings).and_return(false)
       end
 
-      it 'returns nil' do
+      it 'returns nil when Legion::Settings is also unavailable' do
+        stub_const('Legion::Settings', Class.new do
+          def self.respond_to?(method, *)
+            return false if method == :[]
+
+            super
+          end
+        end)
         expect(described_class.daemon_url).to be_nil
+      end
+    end
+
+    context 'when Legion::LLM.settings is unavailable but Legion::Settings has llm config' do
+      before do
+        allow(Legion::LLM).to receive(:respond_to?).with(:settings).and_return(false)
+        allow(Legion::Settings).to receive(:[]).with(:llm).and_return({ daemon: { url: 'http://fallback:4000' } })
+      end
+
+      it 'falls back to Legion::Settings[:llm] for the daemon url' do
+        expect(described_class.daemon_url).to eq('http://fallback:4000')
       end
     end
 
