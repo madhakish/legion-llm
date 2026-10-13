@@ -2,7 +2,7 @@
 
 LLM integration for the [LegionIO](https://github.com/LegionIO/LegionIO) framework. Wraps [ruby_llm](https://github.com/crmne/ruby_llm) to provide chat, embeddings, tool use, and agent capabilities to any Legion extension. Exposes OpenAI- and Anthropic-compatible API endpoints so external tools can point at the Legion daemon and just work.
 
-**Version**: 0.8.0
+**Version**: see [`version.rb`](lib/legion/llm/version.rb)
 
 ## Installation
 
@@ -881,11 +881,11 @@ bundle exec rspec
 
 ### Running Tests
 
-Tests run against real `Legion::Logging` and `Legion::Settings` implementations (hard dependencies, never stubbed). Each test resets settings to defaults via `before(:each)`. No full LegionIO stack required.
+The current `spec/spec_helper.rb` stubs `Legion::Logging` and `Legion::Settings`, loads WebMock and the transport stub, and resets settings via `before(:each)`. No full LegionIO stack is required. Inspect individual specs and use the isolated environment described in [the fork development guide](docs/DEVELOPMENT.md); mocked success does not establish live provider compatibility.
 
 ```bash
 bundle exec rspec                              # Run all tests
-bundle exec rubocop                            # Lint (0 offenses)
+bundle exec rubocop                            # Non-mutating lint
 bundle exec rspec spec/legion/llm_spec.rb      # Run specific test file
 bundle exec rspec spec/legion/llm/router_spec.rb  # Router tests only
 ```
@@ -902,3 +902,7 @@ bundle exec rspec spec/legion/llm/router_spec.rb  # Router tests only
 ## License
 
 Apache-2.0
+
+## Developing this fork
+
+See [the fork development guide](docs/DEVELOPMENT.md) for the source/spec map, an offline RSpec planning helper, safe validation boundaries and proposed self-hosted CI improvements. Agent entry points are [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md). Helpers do not start Legion or access live services.
