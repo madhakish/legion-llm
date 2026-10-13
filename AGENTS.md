@@ -15,11 +15,11 @@ bundle exec rubocop
 ## Primary Entry Points
 
 - `lib/legion/llm.rb`
-- `lib/legion/llm/providers.rb`
+- `lib/legion/llm/call/providers.rb`
 - `lib/legion/llm/router/`
-- `lib/legion/llm/pipeline/`
-- `lib/legion/llm/structured_output.rb`
-- `lib/legion/llm/embeddings.rb`
+- `lib/legion/llm/inference/`
+- `lib/legion/llm/call/structured_output.rb`
+- `lib/legion/llm/call/embeddings.rb`
 - `lib/legion/llm/fleet/`
 
 ## Guardrails
@@ -35,3 +35,7 @@ bundle exec rubocop
 
 - Run targeted specs for modified router/pipeline/provider code.
 - Before handoff, run full `bundle exec rspec` and `bundle exec rubocop`.
+
+## Fork-local workflow
+
+Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for canonical validation boundaries and the repository-specific helper. Use the `review-legion-routing` skill in `.agents/skills/` for this review workflow.

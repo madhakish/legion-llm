@@ -1,14 +1,15 @@
 # legion-llm
 
-**Repository Level 3 Documentation**
-- **Parent**: `/Users/miverso2/rubymine/legion/CLAUDE.md`
+**Repository architecture reference**
+
+For standalone fork development, read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md); no parent-workspace path is required.
 
 ## Purpose
 
 Core LegionIO gem providing LLM capabilities to all extensions. Wraps ruby_llm to provide a consistent interface for chat, embeddings, tool use, and agents across multiple providers (Bedrock, Anthropic, OpenAI, Gemini, Ollama). Includes a dynamic weighted routing engine that dispatches requests across local, fleet, and cloud tiers based on caller intent, priority rules, time schedules, cost multipliers, and real-time provider health.
 
 **GitHub**: https://github.com/LegionIO/legion-llm
-**Version**: 0.8.0
+**Version**: see `lib/legion/llm/version.rb`
 **License**: Apache-2.0
 
 ## Architecture
@@ -668,7 +669,7 @@ In-memory signal consumer with pluggable handlers. Adjusts effective priorities 
 | `spec/legion/llm/inference/steps/rag_guard_spec.rb` | Tests: RAG faithfulness checking |
 | `spec/legion/llm/inference/enrichment_injector_spec.rb` | Tests: enrichment injection into system prompt |
 | `spec/legion/llm/inference/rag_gas_integration_spec.rb` | Tests: RAG/GAS full cycle integration |
-| `spec/spec_helper.rb` | Real Legion::Logging and Legion::Settings for testing (no stubs) |
+| `spec/spec_helper.rb` | Stubbed Legion::Logging and Legion::Settings, WebMock and transport stub |
 
 ## Extension Integration
 
@@ -724,11 +725,11 @@ The legacy `vault_path` per-provider setting was removed in v0.3.1.
 
 ## Testing
 
-Tests run without the full LegionIO stack. `spec/spec_helper.rb` uses real `Legion::Logging` and `Legion::Settings` (no stubs — hard dependencies are always present). Each test resets settings to defaults via `before(:each)`.
+Tests run without the full LegionIO stack. `spec/spec_helper.rb` stubs `Legion::Logging` and `Legion::Settings`, requires WebMock and a transport stub, and resets settings via `before(:each)`. Inspect individual specs and isolate credentials/network access before execution.
 
 ```bash
-bundle exec rspec    # 1661 examples, 0 failures
-bundle exec rubocop  # 0 offenses
+bundle exec rspec    # run in the isolated test environment
+bundle exec rubocop  # non-mutating lint
 ```
 
 ## Coding Constraints
